@@ -8,6 +8,99 @@ const defaults = {};
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
 // const dom = videojs.dom || videojs;
 
+const apiHandler = (function() {
+  let player = null;
+  const _private = {
+    TYPE_PREFIX: 'player:',
+    getHandlerKeys: function() {
+      return Object.getOwnPropertyNames(this.handlers);
+    },
+    getTypeName: function(type) {
+      return (type && type.indexOf(this.TYPE_PREFIX) !== -1)
+      ? type.slice(this.TYPE_PREFIX.length): false;
+    },
+    validateTypeName: function(typeName) {
+      return this.getHandlerKeys().includes(typeName);
+    },
+    log: function() {
+      videojs.log(...arguments);
+    },
+    handlers: {
+      play: function(data) {
+        console.log("play", data);
+        player.play();
+      },
+      pause: function(data) {
+        console.log("pause", data);
+        player.pause();
+      },
+      // TODO: stop
+      stop: function(data) {
+        console.log("stop", data);
+      },
+      setCurrentTime: function(data) {
+        console.log("setCurrentTime", data);
+        player.currentTime(data.time);
+      },
+      // TODO: relativelySeek
+      relativelySeek: function(data) {
+        console.log("relativelySeek", data);
+      },
+      // TODO: changeVideo
+      changeVideo: function(data) {
+        console.log("changeVideo", data);
+      },
+      // TODO: mute
+      mute: function(data) {
+        console.log("mute", data);
+      },
+      // TODO: unMute
+      unMute: function(data) {
+        console.log("unMute", data);
+      },
+      // TODO: setVolume
+      setVolume: function(data) {
+        console.log("setVolume", data);
+      },
+      // TODO: remove
+      remove: function(data) {
+        console.log("remove", data);
+      }
+    }
+  };
+  return {
+    facade: function(message) {
+      const data = message.data || {};
+      const type = _private.getTypeName(message.type);
+
+      if (!type || !_private.validateTypeName(type)) {
+        _private.log("Wrong data:", message);
+        return false;
+      }
+
+      _private.handlers[type](data);
+    },
+    init: function(playerInstance) {
+      player = playerInstance;
+    }
+  }
+}());
+
+class PostMessageApiListener {
+  constructor(player) {
+    apiHandler.init(player);
+  }
+
+  subscribe() {
+    window.addEventListener("message", this.receiveMessage, false);
+  }
+
+  receiveMessage(event) {
+    apiHandler.facade(event.data);
+  }
+}
+
+
 /**
  * Function to invoke when the player is ready.
  *
@@ -24,6 +117,9 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin;
  */
 const onPlayerReady = (player, options) => {
   player.addClass('vjs-videojs-postmessage-api');
+
+  const listener = new PostMessageApiListener(player);
+  listener.subscribe();
 };
 
 /**
