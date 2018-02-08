@@ -26,45 +26,151 @@ const apiHandler = (function() {
       videojs.log(...arguments);
     },
     handlers: {
+
+      /**
+       * Play video content.
+       *
+       * @function  play
+       * @param     {Object} [data={}]
+       *            An empty object is expected.
+       */
       play: function(data) {
-        console.log("play", data);
+        _private.log("play", data);
         player.play();
       },
+
+      /**
+       * Pause video content.
+       *
+       * @function  pause
+       * @param     {Object} [data={}]
+       *            An empty object is expected.
+       */
       pause: function(data) {
-        console.log("pause", data);
+        _private.log("pause", data);
         player.pause();
       },
-      // TODO: stop
+
+      /**
+       * Stop video content and reset video buffer and ads.
+       *
+       * @function  stop
+       * @param     {Object} [data={}]
+       *            An empty object is expected.
+       */
       stop: function(data) {
-        console.log("stop", data);
+        _private.log("stop", data);
+        player.src(player.src());
       },
+
+      /**
+       * Go to a specific second of the video.
+       *
+       * @function  setCurrentTime
+       * @param     {Object} [data={}]
+       *            An object of additional params.
+       *
+       * @param     {Number} data.time
+       *            New playback time.
+       */
       setCurrentTime: function(data) {
-        console.log("setCurrentTime", data);
+        _private.log("setCurrentTime", data);
         player.currentTime(data.time);
       },
-      // TODO: relativelySeek
+
+      /**
+       * Rewind a video to specific second: back or forward.
+       *
+       * @function  relativelySeek
+       * @param     {Object} [data={}]
+       *            An object of additional params.
+       *
+       * @param     {Number} data.time
+       *            Number of seconds to rewind a video:
+       *            (minus sign) - rewind to back;
+       *            (plus sign) - rewind forward.
+       */
       relativelySeek: function(data) {
-        console.log("relativelySeek", data);
+        _private.log("relativelySeek", data);
+        let resultTime = player.currentTime() + data.time;
+        if (resultTime < 0) {
+          resultTime = 0;
+        }
+        player.currentTime(resultTime);
       },
+
+      /**
+       * Change video content.
+       *
+       * @function  changeVideo
+       * @param     {Object} [data={}]
+       *            An object of additional params.
+       *
+       * @param     {String} data.id
+       *            Link to source.
+       *
+       * @param     {String} data.hash
+       *            Link to source.
+       *            Upload the video directly to the highest quality available (without automatic switching),
+       *            passing the parameter data.quality with the value 1.
+       *
+       * @param     {Number} data.quality
+       *            Param to upload video with highest quality.
+       */
       // TODO: changeVideo
       changeVideo: function(data) {
-        console.log("changeVideo", data);
+        _private.log("changeVideo", data);
       },
-      // TODO: mute
+
+      /**
+       * Mute video content.
+       *
+       * @function  mute
+       * @param     {Object} [data={}]
+       *            An empty object is expected.
+       */
       mute: function(data) {
-        console.log("mute", data);
+        _private.log("mute", data);
+        player.muted(true);
       },
-      // TODO: unMute
+
+      /**
+       * Unmute video content.
+       *
+       * @function  unMute
+       * @param     {Object} [data={}]
+       *            An empty object is expected.
+       */
       unMute: function(data) {
-        console.log("unMute", data);
+        _private.log("unMute", data);
+        player.muted(false);
       },
-      // TODO: setVolume
+
+      /**
+       * Setting the sound level.
+       *
+       * @function  setVolume
+       * @param     {Object} [data={}]
+       *            An object of additional params.
+       *
+       * @param     {Number} data.volume
+       *            A value from 0 to 1
+       */
       setVolume: function(data) {
-        console.log("setVolume", data);
+        _private.log("setVolume", data);
+        player.volume(data.volume);
       },
-      // TODO: remove
+
+      /**
+       * The removal of the player, and release the resources it is using
+       *
+       * @function  remove
+       * @param     {Object} [data={}]
+       *            An empty object is expected.
+       */
       remove: function(data) {
-        console.log("remove", data);
+        _private.log("remove", data);
+        player.dispose();
       }
     }
   };
