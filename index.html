@@ -62,11 +62,15 @@
       changeVideo: {
         type: 'player:changeVideo',
         data: {
-          id: 'xyz123', // id ролика
+          // id: 'xyz123', // id ролика
           // И загрузить видео сразу в самом высоком качестве из доступных (без автоматического переключения),
           // передавая параметр "quality" со значением "1":
-          hash: 'xyz123', // id ролика
-          quality: 1
+          // hash: 'xyz123', // id ролика
+          // quality: 1
+          source: {
+            src: 'http://rmcdn.2mdn.net/Demo/vast_inspector/android.mp4',
+            type: 'video/mp4'
+          }
         }
       },
       // Выключение звука:

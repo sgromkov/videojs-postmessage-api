@@ -31,11 +31,8 @@ const apiHandler = (function() {
        * Play video content.
        *
        * @function  play
-       * @param     {Object} [data={}]
-       *            An empty object is expected.
        */
-      play: function(data) {
-        _private.log("play", data);
+      play: function() {
         player.play();
       },
 
@@ -43,11 +40,8 @@ const apiHandler = (function() {
        * Pause video content.
        *
        * @function  pause
-       * @param     {Object} [data={}]
-       *            An empty object is expected.
        */
-      pause: function(data) {
-        _private.log("pause", data);
+      pause: function() {
         player.pause();
       },
 
@@ -55,11 +49,8 @@ const apiHandler = (function() {
        * Stop video content and reset video buffer and ads.
        *
        * @function  stop
-       * @param     {Object} [data={}]
-       *            An empty object is expected.
        */
-      stop: function(data) {
-        _private.log("stop", data);
+      stop: function() {
         player.src(player.src());
       },
 
@@ -74,7 +65,6 @@ const apiHandler = (function() {
        *            New playback time.
        */
       setCurrentTime: function(data) {
-        _private.log("setCurrentTime", data);
         player.currentTime(data.time);
       },
 
@@ -91,7 +81,6 @@ const apiHandler = (function() {
        *            (plus sign) - rewind forward.
        */
       relativelySeek: function(data) {
-        _private.log("relativelySeek", data);
         let resultTime = player.currentTime() + data.time;
         if (resultTime < 0) {
           resultTime = 0;
@@ -106,6 +95,9 @@ const apiHandler = (function() {
        * @param     {Object} [data={}]
        *            An object of additional params.
        *
+       * @param     {Object} data.source
+       *            Video source in videojs format.
+       *
        * @param     {String} data.id
        *            Link to source.
        *
@@ -117,20 +109,19 @@ const apiHandler = (function() {
        * @param     {Number} data.quality
        *            Param to upload video with highest quality.
        */
-      // TODO: changeVideo
       changeVideo: function(data) {
-        _private.log("changeVideo", data);
+        const source = data.source;
+        if (source) {
+          player.src(source);
+        }
       },
 
       /**
        * Mute video content.
        *
        * @function  mute
-       * @param     {Object} [data={}]
-       *            An empty object is expected.
        */
-      mute: function(data) {
-        _private.log("mute", data);
+      mute: function() {
         player.muted(true);
       },
 
@@ -138,11 +129,8 @@ const apiHandler = (function() {
        * Unmute video content.
        *
        * @function  unMute
-       * @param     {Object} [data={}]
-       *            An empty object is expected.
        */
-      unMute: function(data) {
-        _private.log("unMute", data);
+      unMute: function() {
         player.muted(false);
       },
 
@@ -157,7 +145,6 @@ const apiHandler = (function() {
        *            A value from 0 to 1
        */
       setVolume: function(data) {
-        _private.log("setVolume", data);
         player.volume(data.volume);
       },
 
@@ -165,11 +152,8 @@ const apiHandler = (function() {
        * The removal of the player, and release the resources it is using
        *
        * @function  remove
-       * @param     {Object} [data={}]
-       *            An empty object is expected.
        */
-      remove: function(data) {
-        _private.log("remove", data);
+      remove: function() {
         player.dispose();
       }
     }
@@ -184,6 +168,7 @@ const apiHandler = (function() {
         return false;
       }
 
+      _private.log(type, data);
       _private.handlers[type](data);
     },
     init: function(playerInstance) {
