@@ -145,7 +145,13 @@ const apiHandler = (function() {
        *            A value from 0 to 1
        */
       setVolume: function(data) {
-        player.volume(data.volume);
+        const volume = data.volume;
+        player.volume(volume);
+        if (volume == 0) {
+          player.muted(true);
+        } else {
+          player.muted(false);
+        }
       },
 
       /**
@@ -187,7 +193,9 @@ class PostMessageApiListener {
   }
 
   receiveMessage(event) {
-    apiHandler.facade(event.data);
+    if (event.source !== event.target) {
+      apiHandler.facade(JSON.parse(event.data));
+    }
   }
 }
 

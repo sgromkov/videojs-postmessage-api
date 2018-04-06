@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-postmessage-api Test</title>
+</head>
+<body style="padding: 0 20px;">
+  <iframe src="index.html" frameborder="1" width="1000" height="480" id="player"></iframe>
+
+  <h2>Player controls</h2>
+
+  <div id="controls">
+    <p>
+      <button data-type="play">pLay</button>
+      <button data-type="pause">pause</button>
+      <button data-type="stop">stop</button>
+      <button data-type="remove">remove</button>
+    </p>
+    <p>
+      <button data-type="setCurrentTime" data-data='{"time":20}'>setCurrentTime: 20 sec</button>
+      &nbsp;&nbsp;&nbsp;
+      <button data-type="relativelySeek" data-data='{"time":-20}'>relativelySeek: -20</button>
+      <button data-type="relativelySeek" data-data='{"time":20}'>relativelySeek: +20</button>
+    </p>
+    <p>
+      <button data-type="mute">mute</button>
+      <button data-type="unMute">unMute</button>
+      <button data-type="setVolume" data-data='{"volume":0.20}'>setVolume: 0.20</button>
+    </p>
+    <p>
+      <button data-type="changeVideo"
+              data-data='{"source":{"src":"http://rmcdn.2mdn.net/Demo/vast_inspector/android.mp4","type":"video/mp4"}}'>
+        changeVideo
+      </button>
+    </p>
+  </div>
+
+
+  <script>
+    (function() {
+      var player = document.getElementById('player');
+      var controls = document.getElementById('controls');
+
+      var controlsClickListener = function(event) {
+        var dataset;
+        var command;
+        var target = event.target;
+        if (target.tagName === 'BUTTON') {
+          event.preventDefault();
+          event.stopPropagation();
+          dataset = target.dataset;
+          command = {
+            type: "player:" + dataset.type,
+            data: (dataset.hasOwnProperty("data")) ? JSON.parse(dataset.data) : {}
+          };
+          player.contentWindow.postMessage(JSON.stringify(command), '*');
+        }
+      };
+
+      controls.addEventListener('click', controlsClickListener, false);
+    }());
+  </script>
+</body>
+</html>
