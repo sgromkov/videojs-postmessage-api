@@ -4,8 +4,20 @@ A Video.js plugin for postMessage API
 
 ## Table of Contents
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [`<script>` Tag](#script-tag)
+  - [Browserify/CommonJS](#browserifycommonjs)
+  - [RequireJS/AMD](#requirejsamd)
+- [API](#api)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Installation
 
 ```sh
@@ -58,6 +70,115 @@ require(['video.js', 'videojs-postmessage-api'], function(videojs) {
   player.postmessageApi();
 });
 ```
+
+## API
+
+* **Play video:**
+  ```
+    {
+      type: 'player:play',
+      data: {}
+    }
+  ```
+
+* **Pause video:**
+  ```
+  {
+    type: 'player:pause',
+    data: {}
+  }
+  ```
+
+* **Stop video and reset video buffer and ads:**
+  ```
+  {
+    type: 'player:stop',
+    data: {}
+  }
+  ```
+
+* **Go to a specific second of the video:**
+
+  `data.time` - new playback time in seconds.
+
+  ```
+  {
+    type: 'player:setCurrentTime',
+    data: {
+      time: 20
+    }
+  }
+  ```
+
+* **Rewind the video for a specified number of seconds forward or backward:**
+
+  `data.time` - number of seconds to rewind a video:
+  * `-` *(minus)* - rewind to back;
+  * `+` *(plus)* - rewind forward.
+
+  ```
+  {
+    type: 'player:relativelySeek',
+    data: {
+      time: +20
+    }
+  }
+  ```
+
+* **Change video source:**
+
+  `data.source` - video source in videojs format.
+
+  ```
+  {
+    type: 'player:relativelySeek',
+    data: {
+      {
+        source: {
+          src: 'http://rmcdn.2mdn.net/Demo/vast_inspector/android.mp4',type: 'video/mp4'
+        }
+      }
+    }
+  }
+  ```
+
+* **Mute video:**
+  ```
+  {
+    type: 'player:mute',
+    data: {}
+  }
+  ```
+
+* **Unmute video:**
+  ```
+  {
+    type: 'player:unMute',
+    data: {}
+  }
+  ```
+
+* **Setting the volume level:**
+
+  `data.volume` - a value from 0 to 1.
+
+  ```
+  {
+    type: 'player:setVolume',
+    data: {
+      volume: 0.20
+    }
+  }
+  ```
+
+* **Remove player, and release the resources it is using**
+  ```
+  {
+    type: 'player:remove',
+    data: {}
+  }
+  ```
+
 
 ## License
 
