@@ -2,6 +2,7 @@ import videojs from 'video.js';
 import {version as VERSION} from '../package.json';
 import defaults from './instance/defaults';
 import apiListener from './instance/api-listener';
+import eventEmitter from './instance/event-emitter';
 
 // Cross-compatibility for Video.js 5 and 6.
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
@@ -25,6 +26,7 @@ const onPlayerReady = (player, options) => {
   player.addClass('vjs-videojs-postmessage-api');
 
   apiListener.init(player);
+  eventEmitter.init(player);
 };
 
 /**
@@ -40,9 +42,7 @@ const onPlayerReady = (player, options) => {
  *           An object of options left to the plugin author to define.
  */
 const postmessageApi = function(options) {
-  this.ready(() => {
     onPlayerReady(this, videojs.mergeOptions(defaults, options));
-  });
 };
 
 // Register the plugin with video.js.
