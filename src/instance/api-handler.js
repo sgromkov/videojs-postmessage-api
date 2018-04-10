@@ -1,15 +1,10 @@
 const apiHandler = (function() {
   let player = null;
   const _private = {
-    TYPE_PREFIX: 'player:',
     getHandlerKeys: function() {
       return Object.getOwnPropertyNames(this.handlers);
     },
-    getTypeName: function(type) {
-      return (type && type.indexOf(this.TYPE_PREFIX) !== -1)
-      ? type.slice(this.TYPE_PREFIX.length): false;
-    },
-    validateTypeName: function(typeName) {
+    handlerExist: function(typeName) {
       return this.getHandlerKeys().includes(typeName);
     },
     log: function() {
@@ -157,15 +152,15 @@ const apiHandler = (function() {
   return {
     facade: function(message) {
       const data = message.data || {};
-      const type = _private.getTypeName(message.type);
+      const type = message.type;
 
-      if (!type || !_private.validateTypeName(type)) {
+      if (typeof type === 'string' && _private.handlerExist(type)) {
+        _private.log(type, data);
+        _private.handlers[type](data);
+      } else {
         _private.log("Wrong data:", message);
         return false;
       }
-
-      _private.log(type, data);
-      _private.handlers[type](data);
     },
     init: function(playerInstance) {
       player = playerInstance;
