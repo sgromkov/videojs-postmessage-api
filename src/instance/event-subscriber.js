@@ -44,7 +44,6 @@ const eventSubscriber = (function() {
         let data = {};
 
         if (error) {
-          /* eslint camelcase: ["error", {properties: "never"}] */
           data = {
             reason: 'playback',
             code: error.code,
