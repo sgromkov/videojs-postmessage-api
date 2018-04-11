@@ -58,6 +58,13 @@
       };
 
       controls.addEventListener('click', controlsClickListener, false);
+
+      window.addEventListener('message', function (event) {
+        var message = JSON.parse(event.data);
+        if (message.type !== 'player:currentTime') {
+          console.log('Player message:', message);
+        }
+      });
     }());
   </script>
 </body>
