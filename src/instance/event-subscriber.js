@@ -36,7 +36,25 @@ const eventSubscriber = (function() {
       });
     },
 
-    error(type, callback) {},
+    error(type, callback) {
+      player.on('error', function(event) {
+        event.stopImmediatePropagation();
+
+        const error = player.error();
+        let data = {};
+
+        if (error) {
+          /* eslint camelcase: ["error", {properties: "never"}] */
+          data = {
+            reason: 'playback',
+            code: error.code,
+            text: error.message
+          };
+        }
+
+        callback(type, data);
+      });
+    },
 
     playComplete(type, callback) {
       player.on('ended', function() {
