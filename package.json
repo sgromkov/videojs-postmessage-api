@@ -48,6 +48,14 @@
       "test/karma.conf.js"
     ]
   },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    },
+    "globals": {
+      "videojs": true
+    }
+  },
   "files": [
     "CONTRIBUTING.md",
     "dist/",
