@@ -77,7 +77,13 @@ const eventSubscriber = (function() {
       });
     },
 
-    volumeChange(type, callback) {}
+    volumeChange(type, callback) {
+      player.on('volumechange', function() {
+        const volume = (player.muted()) ? 0 : player.volume();
+
+        callback(type, {volume});
+      });
+    }
   };
 
   return {
