@@ -1,15 +1,55 @@
+/**
+ * Object to control the player via messages.
+ */
 const apiHandler = (function() {
+  /**
+   * Videojs player instance.
+   */
   let player = null;
+
+  /**
+   * Private object containing methods to control the player.
+   */
   const _private = {
+
+    /**
+     * Will return names of handler keys.
+     *
+     * @function  getHandlerKeys
+     * @return    {Array}
+     *            Array of handler keys names.
+     */
     getHandlerKeys() {
       return Object.getOwnPropertyNames(this.handlers);
     },
+
+    /**
+     * Will return true if the typeName exist in handler's array.
+     *
+     * @function  handlerExist
+     * @param     {string} typeName
+     *            Type name.
+     * @return    {boolean}
+     *            True if the typeName exist, false otherwise.
+     */
     handlerExist(typeName) {
       return this.getHandlerKeys().includes(typeName);
     },
-    error(data) {
+
+    /**
+     * Trigger videojs custom error event only for postmessage's plugin needs.
+     *
+     * @function  error
+     * @param     {Object} [data={}]
+     *            Event data.
+     */
+    error(data = {}) {
       player.trigger('postMessageError', data);
     },
+
+    /**
+     * Box with methods.
+     */
     handlers: {
 
       /**
@@ -154,7 +194,18 @@ const apiHandler = (function() {
     }
   };
 
+  /**
+   * Facade pattern:
+   * https://addyosmani.com/largescalejavascript/#facadepattern
+   */
   return {
+    /**
+     * Public method to access an object via messages.
+     *
+     * @function  facade
+     * @param     {Object} message
+     *            Should has type and additional data to control player.
+     */
     facade(message) {
       const data = message.data || {};
       const type = message.type;
@@ -163,9 +214,16 @@ const apiHandler = (function() {
         _private.handlers[type](data);
       } else {
         _private.error({text: 'wrong message: ' + JSON.stringify(message)});
-        return false;
       }
     },
+
+    /**
+     * Public method to set the player you want to control.
+     *
+     * @function init
+     * @param {Object} playerInstance
+     *        Videojs player instance.
+     */
     init(playerInstance) {
       player = playerInstance;
     }
