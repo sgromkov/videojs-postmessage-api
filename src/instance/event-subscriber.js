@@ -53,6 +53,22 @@ const eventSubscriber = (function() {
 
         callback(type, data);
       });
+
+      player.on('postMessageError', function(event, hash) {
+        const data = {
+          reason: 'management'
+        };
+
+        if (hash.hasOwnProperty('code')) {
+          data.code = hash.code;
+        }
+
+        if (hash.hasOwnProperty('text')) {
+          data.text = hash.text;
+        }
+
+        callback(type, data);
+      });
     },
 
     playComplete(type, callback) {
@@ -73,7 +89,7 @@ const eventSubscriber = (function() {
         }
       }
     }
-  }
+  };
 }());
 
 export default eventSubscriber;

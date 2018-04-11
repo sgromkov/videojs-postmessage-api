@@ -6,13 +6,13 @@ const eventEmitter = {
   getMessage(type, data = {}) {
     return {
       type: this.TYPE_PREFIX + type,
-      data: data
+      data
     };
   },
 
   sendMessage(message) {
     if (parent !== window) {
-      parent.postMessage(JSON.stringify(message), "*");
+      parent.postMessage(JSON.stringify(message), '*');
     }
   },
 

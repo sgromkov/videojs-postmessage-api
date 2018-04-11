@@ -1,14 +1,14 @@
 const apiHandler = (function() {
   let player = null;
   const _private = {
-    getHandlerKeys: function() {
+    getHandlerKeys() {
       return Object.getOwnPropertyNames(this.handlers);
     },
-    handlerExist: function(typeName) {
+    handlerExist(typeName) {
       return this.getHandlerKeys().includes(typeName);
     },
-    log: function() {
-      videojs.log(...arguments);
+    error(data) {
+      player.trigger('postMessageError', data);
     },
     handlers: {
 
@@ -17,7 +17,7 @@ const apiHandler = (function() {
        *
        * @function  play
        */
-      play: function() {
+      play() {
         player.play();
       },
 
@@ -26,7 +26,7 @@ const apiHandler = (function() {
        *
        * @function  pause
        */
-      pause: function() {
+      pause() {
         player.pause();
       },
 
@@ -35,7 +35,7 @@ const apiHandler = (function() {
        *
        * @function  stop
        */
-      stop: function() {
+      stop() {
         player.src(player.src());
       },
 
@@ -46,10 +46,10 @@ const apiHandler = (function() {
        * @param     {Object} [data={}]
        *            An object of additional params.
        *
-       * @param     {Number} data.time
+       * @param     {number} data.time
        *            New playback time.
        */
-      setCurrentTime: function(data) {
+      setCurrentTime(data) {
         player.currentTime(data.time);
       },
 
@@ -60,13 +60,14 @@ const apiHandler = (function() {
        * @param     {Object} [data={}]
        *            An object of additional params.
        *
-       * @param     {Number} data.time
+       * @param     {number} data.time
        *            Number of seconds to rewind a video:
        *            (minus sign) - rewind to back;
        *            (plus sign) - rewind forward.
        */
-      relativelySeek: function(data) {
+      relativelySeek(data) {
         let resultTime = player.currentTime() + data.time;
+
         if (resultTime < 0) {
           resultTime = 0;
         }
@@ -83,19 +84,21 @@ const apiHandler = (function() {
        * @param     {Object} data.source
        *            Video source in videojs format.
        *
-       * @param     {String} data.id
+       * @param     {string} data.id
        *            Link to source.
        *
-       * @param     {String} data.hash
+       * @param     {string} data.hash
        *            Link to source.
-       *            Upload the video directly to the highest quality available (without automatic switching),
+       *            Upload the video directly to the highest quality available
+       *            (without automatic switching),
        *            passing the parameter data.quality with the value 1.
        *
-       * @param     {Number} data.quality
+       * @param     {number} data.quality
        *            Param to upload video with highest quality.
        */
-      changeVideo: function(data) {
+      changeVideo(data) {
         const source = data.source;
+
         if (source) {
           player.src(source);
         }
@@ -106,7 +109,7 @@ const apiHandler = (function() {
        *
        * @function  mute
        */
-      mute: function() {
+      mute() {
         player.muted(true);
       },
 
@@ -115,7 +118,7 @@ const apiHandler = (function() {
        *
        * @function  unMute
        */
-      unMute: function() {
+      unMute() {
         player.muted(false);
       },
 
@@ -126,13 +129,14 @@ const apiHandler = (function() {
        * @param     {Object} [data={}]
        *            An object of additional params.
        *
-       * @param     {Number} data.volume
+       * @param     {number} data.volume
        *            A value from 0 to 1
        */
-      setVolume: function(data) {
+      setVolume(data) {
         const volume = data.volume;
+
         player.volume(volume);
-        if (volume == 0) {
+        if (volume === 0) {
           player.muted(true);
         } else {
           player.muted(false);
@@ -144,28 +148,28 @@ const apiHandler = (function() {
        *
        * @function  remove
        */
-      remove: function() {
+      remove() {
         player.dispose();
       }
     }
   };
+
   return {
-    facade: function(message) {
+    facade(message) {
       const data = message.data || {};
       const type = message.type;
 
       if (typeof type === 'string' && _private.handlerExist(type)) {
-        _private.log(type, data);
         _private.handlers[type](data);
       } else {
-        _private.log("Wrong data:", message);
+        _private.error({text: 'wrong message: ' + JSON.stringify(message)});
         return false;
       }
     },
-    init: function(playerInstance) {
+    init(playerInstance) {
       player = playerInstance;
     }
-  }
+  };
 }());
 
 export default apiHandler;

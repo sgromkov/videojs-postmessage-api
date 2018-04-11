@@ -42,7 +42,7 @@ const onPlayerReady = (player, options) => {
  *           An object of options left to the plugin author to define.
  */
 const postmessageApi = function(options) {
-    onPlayerReady(this, videojs.mergeOptions(defaults, options));
+  onPlayerReady(this, videojs.mergeOptions(defaults, options));
 };
 
 // Register the plugin with video.js.
