@@ -195,6 +195,7 @@ const apiHandler = (function() {
   };
 
   /**
+   * Public object to contact with apiHandler.
    * Facade pattern:
    * https://addyosmani.com/largescalejavascript/#facadepattern
    */
@@ -220,9 +221,9 @@ const apiHandler = (function() {
     /**
      * Public method to set the player you want to control.
      *
-     * @function init
-     * @param {Object} playerInstance
-     *        Videojs player instance.
+     * @function  init
+     * @param     {Object} playerInstance
+     *            Videojs player instance.
      */
     init(playerInstance) {
       player = playerInstance;
