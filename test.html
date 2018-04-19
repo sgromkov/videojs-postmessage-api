@@ -45,24 +45,34 @@
         var dataset;
         var command;
         var target = event.target;
+        var prefix = 'player-api-command://';
+
         if (target.tagName === 'BUTTON') {
           event.preventDefault();
           event.stopPropagation();
           dataset = target.dataset;
           command = {
-            type: "player:" + dataset.type,
-            data: (dataset.hasOwnProperty("data")) ? JSON.parse(dataset.data) : {}
+            type: 'player:' + dataset.type,
+            data: (dataset.hasOwnProperty('data')) ? JSON.parse(dataset.data) : {}
           };
-          player.contentWindow.postMessage(JSON.stringify(command), '*');
+
+          player.contentWindow.postMessage(prefix + JSON.stringify(command), '*');
         }
       };
 
       controls.addEventListener('click', controlsClickListener, false);
 
       window.addEventListener('message', function (event) {
-        var message = JSON.parse(event.data);
-        if (message.type !== 'player:currentTime') {
-          console.log('Player message:', message);
+        var prefix = 'player-api-event://';
+        var data;
+        var message;
+
+        if (typeof event.data === 'string' && event.data.indexOf(prefix) === 0) {
+          data = event.data.substring(prefix.length);
+          message = JSON.parse(data);
+          if (message.type !== 'player:currentTime') {
+            console.log(prefix, message);
+          }
         }
       });
     }());

@@ -32,8 +32,10 @@ const eventEmitter = {
    *            Plugin's message.
    */
   sendMessage(message) {
+    const prefix = 'player-api-event://';
+
     if (parent !== window) {
-      parent.postMessage(JSON.stringify(message), '*');
+      parent.postMessage(prefix + JSON.stringify(message), '*');
     }
   },
 

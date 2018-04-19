@@ -50,8 +50,13 @@ const apiListener = {
    *            Standart browser's event.
    */
   receiveMessage(event) {
-    if (event.source !== event.target) {
-      const message = this.getMessage(JSON.parse(event.data));
+    const prefix = 'player-api-command://';
+    let data;
+    let message;
+
+    if (typeof event.data === 'string' && event.data.indexOf(prefix) === 0) {
+      data = event.data.substring(prefix.length);
+      message = this.getMessage(JSON.parse(data));
 
       if (message) {
         apiHandler.facade(message);
